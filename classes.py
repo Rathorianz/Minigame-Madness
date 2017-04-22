@@ -2,7 +2,7 @@ import math
 import pygame
 class Grid:
 
-    def __init__(self, screen, initx = 7, inity = 6, initwidth = 50):
+    def __init__(self, screen, startingplayer = 'C', initx = 7, inity = 6, initwidth = 50):
         RED = (255, 0, 0)
         self.color = RED
         self.matrix = [[0 for x in range(initx)]for x in range(inity)]
@@ -16,13 +16,19 @@ class Grid:
         self.gridLineWidth = 1
         self.MovingPiecePosition = (self.initx//2)+1
         self.currentMovingPiece = 0
+        self.currentPlayer = 0
+        self.startingplayer = startingplayer
+        if (self.startingplayer == 'C'):
+            self.secondplayer = 'U'
+        else:
+            self.secondplayer = 'C'
 
         self.pieces = []
         for i in range (self.initx * self.inity):
             if (i%2==0):
-                self.pieces.append(Piece('C',self.initwidth))
+                self.pieces.append(Piece(self.startingplayer,self.initwidth))
             else:
-                self.pieces.append(Piece('U',self.initwidth))
+                self.pieces.append(Piece(self.secondplayer,self.initwidth))
         #self.drawgrid()
         self.startGame()
 
@@ -73,12 +79,71 @@ class Grid:
                         self.pieces[self.currentMovingPiece].RemoveMe(self.screen, self.yOffset ,self.GetXLocation())
                         self.drawgrid()
                         print ("game over!!! no one won")
-                    #self.didUserWin()
+                    self.didPlayerWin()
+
                     #self.ComputerMove()
                     #self.moveAndDrop()
                 else:
                     print("no move")
 
+    def didPlayerWin(self):
+        if(self.didPlayerWinHorizontally() == True or self.didPlayerWinVertically() == True or self.didPlayerWinDiagonally() == True):
+            print("won")
+
+    def getPieceGivenXY(self,x,y):
+        for i in range (self.initx * self.inity):
+            if (self.pieces[i].x == x and self.pieces[i].y == y):
+                return self.pieces[i]
+        return ""
+
+    def didPlayerWinHorizontally(self):
+        for i in range (self.inity):
+            for j in range (self.initx - 2):
+                piece1 = self.getPieceGivenXY(j, i)
+                piece2 = self.getPieceGivenXY(j + 1, i)
+                piece3 = self.getPieceGivenXY(j + 2, i)
+                piece4 = self.getPieceGivenXY(j + 3, i)
+                if self.checkforwinning(piece1, piece2, piece3, piece4) == True:
+                    return True
+        return False
+
+    def didPlayerWinVertically(self):
+        for i in range (self.initx + 1):
+            for j in range (self.inity - 3):
+                piece1 = self.getPieceGivenXY(i, j)
+                piece2 = self.getPieceGivenXY(i, j + 1)
+                piece3 = self.getPieceGivenXY(i, j + 2)
+                piece4 = self.getPieceGivenXY(i, j + 3)
+                if self.checkforwinning(piece1, piece2, piece3, piece4) == True:
+                    return True
+        return False
+
+    def checkforwinning(self,piece1, piece2, piece3, piece4):
+        if (piece1 != "" and  piece2 != "" and  piece3 != "" and piece4 != "" and piece1.color == piece2.color == piece3.color == piece4.color):
+            return True
+        else:
+            return False
+
+    def didPlayerWinDiagonally(self):
+        for i in range (self.inity - 2):
+            for j in range (self.initx - 2):
+                piece1 = self.getPieceGivenXY(j, i)
+                piece2 = self.getPieceGivenXY(j + 1, i + 1)
+                piece3 = self.getPieceGivenXY(j + 2, i + 2)
+                piece4 = self.getPieceGivenXY(j + 3, i + 3)
+                if self.checkforwinning(piece1, piece2, piece3, piece4) == True:
+                    return True
+
+        for i in range (self.initx - 2):
+            for j in range (self.inity, 2, -1):
+                piece1 = self.getPieceGivenXY(i, j)
+                piece2 = self.getPieceGivenXY(i + 1, j - 1)
+                piece3 = self.getPieceGivenXY(i + 2, j - 2)
+                piece4 = self.getPieceGivenXY(i + 3, j - 3)
+                if self.checkforwinning(piece1, piece2, piece3, piece4) == True:
+                    return True
+
+        return False
 
     def checkNewAvailableSquare(self,x):
         ColumnLocation = 0
@@ -159,10 +224,10 @@ class Piece:
     def RemoveMe(self,screen,rectY,rectX):
         pygame.draw.circle(screen, self.backColor, [rectX+self.diameter//2, rectY] ,((self.diameter-10)//2))
 
-    def move(self, dire):
-        if(dire == 'a'):   #NTS restriction i.e. self.x-1 <= abs(3)
-            self.x - 1
-        elif(dire == 's'): #NTS goes down till there is a piece below or bottom of grid....while loop
-            self.y
-        elif(dire == 'd'): #NTS restriction i.e. self.x+1 <= abs(3)
-            self.x + 1
+    #def move(self, dire):
+    #    if(dire == 'a'):   #NTS restriction i.e. self.x-1 <= abs(3)
+    #        self.x - 1
+    #    elif(dire == 's'): #NTS goes down till there is a piece below or bottom of grid....while loop
+    #        self.y
+    #    elif(dire == 'd'): #NTS restriction i.e. self.x+1 <= abs(3)
+    #        self.x + 1
