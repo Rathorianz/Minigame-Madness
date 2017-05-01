@@ -103,8 +103,10 @@ class Grid:
                         self.pieces[self.currentMovingPiece].RemoveMe(self.screen, self.yOffset ,self.GetXLocation())
                         self.drawgrid()
                         print ("game over!!! no one won")
+                        self.displaywinningmessage('no')
+
                     if (self.didPlayerWin() == True):
-                        self.displaywinningmessage()
+                        self.displaywinningmessage('yes')
 
                     if (self.playermode == 1 and self.currentplayer == 'U'):
                         X = self.IntelligentMove()
@@ -238,26 +240,39 @@ class Grid:
 
 
 
-    def displaywinningmessage(self):
+    def displaywinningmessage(self,win):
         BLACK=(0,0,0)
         BLUE = (0, 0, 255)
         RED = (255, 0, 0)
         LIGHTRED = (100,0,0)
         YELLOW = (255,255,0)
-        if (self.playermode == 1):
-            if(self.currentplayer == 'U'):
-                winningmessage = 'Congrats you won!!!'
-            else:
-                winningmessage = 'You Lost!!!'
+        if(win == 'yes'):
+            if (self.playermode == 1):
+                if(self.currentplayer == 'U'):
+                    winningmessage = 'Congrats you won!!!'
+                    myfile = file('arieltest.txt')
+                    myfile.writefile('Player 1 won!')
+                else:
+                    winningmessage = 'You Lost!!!'
+                    myfile = file('arieltest.txt')
+                    myfile.writefile('Computer won!')
 
-        else:
-            if (self.currentplayer == 'U'):
-                winningmessage = 'Player 1 won!!!'
             else:
-                winningmessage = 'Player 2 won!!!'
+                if (self.currentplayer == 'U'):
+                    winningmessage = 'Player 1 won!!!'
+                    myfile = file('arieltest.txt')
+                    myfile.writefile('Player 1 won!')
+
+                else:
+                    winningmessage = 'Player 2 won!!!'
+                    myfile = file('arieltest.txt')
+                    myfile.writefile('Player 2 won!')
+        else:
+            winningmessage = 'Tie!'
+            myfile = file('arieltest.txt')
+            myfile.writefile('Nobody won!')
         self.drawgrid()
-        myfile = file('arieltest.txt')
-        myfile.writefile('Computer LOST')
+
         x = screens("Times New Roman", self.screen)
         x.screenmaking(winningmessage, "", BLUE, RED, BLACK, "Play again","exit", 'yes')
 
