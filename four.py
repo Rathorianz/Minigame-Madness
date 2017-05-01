@@ -19,9 +19,13 @@ end_it=False
 def main():
     x = classes.screens("Times New Roman", screen)
     x.screenmaking("Welcome to Connect Four!!", "Click the button to continue", BLUE, RED, BLACK, "Continue!","nothing", 'no')
-    x.screenmaking("Choose 1 or 2 Players", "Press the down arrow to continue", BLUE, RED, BLACK,"One Player", "Two Player", 'yes')
+    returnvalue = x.screenmaking("Choose 1 or 2 Players", "", BLUE, RED, BLACK,"One Player", "Two Player", 'yes')
+    if (returnvalue == 'OnePlayer'):
+        MyGrid = classes.Grid(screen)
+    else:
+        MyGrid = classes.Grid(screen, 'twoplayer')
 
-    MyGrid = classes.Grid(screen)
+    #MyGrid = classes.Grid(screen)
     done = False
     MyGrid.drawgrid()
     pygame.display.flip()
