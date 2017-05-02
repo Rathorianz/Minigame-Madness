@@ -450,27 +450,22 @@ class Grid:
             if (self.playermode == 1):
                 if(self.currentplayer == 'U'):
                     winningmessage = 'Congrats you won!!!'
-                    #myfile.writeJSONfile('Player 1 won!')
                     myfile.writeJSONfile('P1')
 
                 else:
                     winningmessage = 'You Lost!!!'
-                    #myfile.writeJSONfile('Computer won!')
                     myfile.writeJSONfile('C')
 
             else:
                 if (self.currentplayer == 'U'):
                     winningmessage = 'Player 1 won!!!'
-                    #myfile.writeJSONfile('Player 1 won!')
                     myfile.writeJSONfile('P1')
                 else:
                     winningmessage = 'Player 2 won!!!'
-                    #myfile.writeJSONfile('Player 2 won!')
                     myfile.writeJSONfile('P2')
 
         else:
             winningmessage = 'Tie!'
-            #myfile.writeJSONfile('Nobody won!')
             myfile.writeJSONfile('T')
 
         self.drawgrid()
@@ -483,12 +478,8 @@ class Grid:
         if (returnvalue == 'history'):
 
             historymessage = myfile.readJSONfile()
-            label1 = historymessage[0]
-            label2 = historymessage[1]
-            label3 = historymessage[2]
-            label4 = historymessage[3]
             y = screens("Times New Roman", self.screen)
-            returnvalue = y.screenmaking(label1, label2, BLUE, RED, BLACK, "Start Over","mean nothing", 'no', 'history', label3, label4)
+            returnvalue = y.screenmaking(historymessage[0], historymessage[1], BLUE, RED, BLACK, "Start Over","mean nothing", 'no', 'history', historymessage[2], historymessage[3])
 
         if (returnvalue == 'restart'):
             z = screens("Times New Roman", self.screen)
@@ -886,16 +877,11 @@ class screens:
             ilabel = myfont.render(label3, 3, fontcolor)
             jlabel = myfont.render(label4, 4, fontcolor)
             end_it = self.button(fontcolortxt, button1label, button2label, value, method)
-            if (end_it == 'OnePlayer'):
-                return 'OnePlayer'
-            if (end_it == 'TwoPlayer'):
-                return 'TwoPlayer'
-            if (end_it == 'history'):
-                return 'history'
-            if (end_it == 'restart'):
-                return 'restart'
-            #if (end_it == ):
-            #    return 'TwoPlayer'
+
+            #if end_it is not False an action needs to take place
+            if (not(end_it == False or end_it == True)):
+                return end_it
+
             for event in pygame.event.get():
                 if event.type==pygame.KEYDOWN:
                     end_it=True
