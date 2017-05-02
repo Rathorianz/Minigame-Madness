@@ -1,3 +1,13 @@
+
+##################################################################################################################################
+#       Project Name:   Connect Four
+#       Developers:     Ariel Khatchatourian, Jacob Croes, Ben Winston, Greg Barton
+#       Date Finished:  5/2/2017
+#       Objective:      Create a connect four game that allows the user to chose whether they will play against another person
+#                       or a computer.  It keeps track of the history of winnings.  The player must get four in a row to win
+#                       the game.
+##################################################################################################################################
+
 import pygame
 import classes
 
@@ -25,7 +35,6 @@ def main():
     else:
         MyGrid = classes.Grid(screen, 'twoplayer')
 
-    #MyGrid = classes.Grid(screen)
     done = False
     MyGrid.drawgrid()
     pygame.display.flip()
