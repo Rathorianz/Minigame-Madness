@@ -5,7 +5,8 @@
 #       Date Finished:  5/2/2017
 #       Objective:      Create a connect four game that allows the user to chose whether they will play against another person
 #                       or a computer.  It keeps track of the history of winnings.  The player must get four in a row to win
-#                       the game.
+#                       the game.  In order to move the pieces, the user must use the left and right arrow.  To drop the piece
+#                       the user must press the down arrow.
 ##################################################################################################################################
 
 import pygame
