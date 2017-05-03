@@ -150,7 +150,9 @@ class Grid:
     def CanImproveWin(self, usertype):
         #####################################################################################
         #       Developer:      Jacob Croes
-        #       Definition:
+        #       Definition:     This is used to order the rules defined below to give priority
+        #                       with diagonal having the highest  prefreance followed by 
+        #                       horizontal and vertical
         #####################################################################################
         x = self.CanImproveWinDiagnoally(usertype)
         if (x != -1):
@@ -169,7 +171,9 @@ class Grid:
     def CanImproveWinHorizontally(self, usertype):
         #####################################################################################
         #       Developer:      Jacob Croes
-        #       Definition:
+        #       Definition:     This is used to check for three in a row horizontally where
+        #                       there is two in a row or one piece with a gap and then another 
+        #                       piece
         #####################################################################################
         for i in range (self.inity):
             for j in range (1, self.initx-1):
@@ -187,7 +191,8 @@ class Grid:
     def CheckTwoPossiblePieces(self,usertype, x1,y1,x2,y2,p1,p2,p3,p4):
         #####################################################################################
         #       Developer:      Jacob Croes
-        #       Definition:
+        #       Definition:     This is used to check if the pieces next to eachother or the 
+        #                       pieces with the gap in between are the same color
         #####################################################################################
         piece1 = self.getPieceGivenXY(x1, y1)
         piece2 = self.getPieceGivenXY(x2, y2)
@@ -202,7 +207,8 @@ class Grid:
     def CanImproveWinVertically(self, usertype):
         #####################################################################################
         #       Developer:      Jacob Croes
-        #       Definition:
+        #       Definition:     This is used to check for two in a row vertically. And if true
+        #                       adds the piece on top
         #####################################################################################
         for i in range (self.inity-2):
             for j in range (self.initx):
@@ -215,7 +221,10 @@ class Grid:
     def CanImproveWinDiagnoally(self, usertype):
         #####################################################################################
         #       Developer:      Jacob Croes
-        #       Definition:
+        #       Definition:     This is used to check for possible diagonals of three in a row 
+        #                       either where there is two in a row or one piece with a gap and
+        #                       then another piece. It uses bounds too check for impossible cases
+        #                       and to not execute if the bounds are not met
         #####################################################################################
         for i in range(self.inity):
             for j in range(self.initx):
@@ -266,7 +275,7 @@ class Grid:
     def IsPlayable(self, x1, y1, x2, y2):
         #####################################################################################
         #       Developer:      Jacob Croes
-        #       Definition:
+        #       Definition:     This is used to check the bounds
         #####################################################################################
         x = self.IsPlayablePiece(x1, y1)
         if (x != -1):
@@ -281,7 +290,7 @@ class Grid:
     def IsPlayablePiece(self, x, y):
         #####################################################################################
         #       Developer:      Jacob Croes
-        #       Definition:
+        #       Definition:     This is used to set the bounds
         #####################################################################################
         if (x > 0 and x <= self.initx and y >= 0 and y <= self.inity):
             if (self.getPieceGivenXY(x,y) == ""):
