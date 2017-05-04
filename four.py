@@ -12,6 +12,7 @@
 import pygame
 import classes
 
+# initializes the game in python
 pygame.init()
 
 size = (700, 700)
@@ -28,9 +29,12 @@ end_it=False
 
 
 def main():
+    #creates the first two screens that the user will see
     x = classes.screens("Times New Roman", screen)
     x.screenmaking("Welcome to Connect Four!!", "Click the button to continue", BLUE, RED, BLACK, "Continue!","nothing", 'no')
     returnvalue = x.screenmaking("Choose 1 or 2 Players", "", BLUE, RED, BLACK,"One Player", "Two Player", 'yes')
+
+    #performs different functions based on what the user presses
     if (returnvalue == 'OnePlayer'):
         MyGrid = classes.Grid(screen)
     else:
@@ -41,10 +45,12 @@ def main():
     pygame.display.flip()
 
     while not done:
+        #continues to display the game until the user quits out
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 done = True
             if event.type == pygame.KEYDOWN:
+                #if the user presses the right, left or down arrow key it specifies a move right, left or dropping it respectively
                 if event.key == pygame.K_LEFT:
                     MyGrid.MoveMovingPiece('L')
                     pygame.display.flip()
