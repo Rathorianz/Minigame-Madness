@@ -14,7 +14,7 @@ class Grid:
 
     def __init__(self, screen, diff, playermode = 'oneplayer', startingplayer = 'U', initx = 7, inity = 6, initwidth = 75):
         #####################################################################################
-        #       Developer:      Ariel Khatchatourian
+        #       Developer:      Ariel Khatchatourian and Jacob Croes
         #       Definition:     Initializes the game and calls NewGame
         #####################################################################################
         self.difficulty = diff
@@ -141,7 +141,7 @@ class Grid:
 
     def IntelligentMove(self):
         #####################################################################################
-        #       Developer:      Ariel Khatchatourian
+        #       Developer:      Ariel Khatchatourian and Jacob Croes
         #       Definition:     Places in order the kinds of moves that the computer should go
         #                       through when making a move.  It goes through the four conditions
         #                       in a specific order and executes the first one that is possible.
@@ -970,7 +970,7 @@ class screens:
 
     def button(self, fontcolortxt, button1label, button2label, value, method = 'button'):
         #####################################################################################
-        #       Developer:      Ariel Khatchatourian
+        #       Developer:      Ariel Khatchatourian and Jacob Croes
         #       Definition:     Cretes buttons to be placed on the screen.  The number of
         #                       buttons on the screen depends on how many is specified and
         #                       it also allows the user to click the button and return a
