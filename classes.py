@@ -6,24 +6,24 @@ import os
 
 class Grid:
     ##################################################################################################################################
-    #       Developer:      Ariel Khatchatourian and Jacob Croes
+    #       Developer:      Ariel Khatchatourian
     #       Date Finished:  5/2/2017
     #       Definition:     The objective of this class is to create the grid for the connect four game
     #                       The class includes one player and two player modes
     ##################################################################################################################################
 
-    def __init__(self, screen, playermode = 'oneplayer', startingplayer = 'U', initx = 7, inity = 6, initwidth = 75):
+    def __init__(self, screen, diff, playermode = 'oneplayer', startingplayer = 'U', initx = 7, inity = 6, initwidth = 75):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
         #       Definition:     Initializes the game and calls NewGame
         #####################################################################################
+        self.difficulty = diff
         self.NewGame(screen, playermode, startingplayer, initx, inity, initwidth)
 
     def GetXLocation(self):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Find the x value of where the piece should be placed in terms
-        #                       of the actual pixal location
+        #       Definition:
         #####################################################################################
         returnValue = self.xOffset+ (self.gridLineWidth*(self.MovingPiecePosition) +(self.initwidth * self.MovingPiecePosition))
         return returnValue
@@ -31,9 +31,7 @@ class Grid:
     def GetXGridLocation(self,x):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Finds the x location of where the piece is located in the grid
-        #                       not the actual pixel location.  The x locations are labeled 1
-        #                       through the number of spaces which in this case is
+        #       Definition:
         #####################################################################################
         returnValue = self.xOffset+ (self.gridLineWidth*(x) +(self.initwidth * x))
         return returnValue
@@ -41,9 +39,7 @@ class Grid:
     def GetYGridLocation(self,y):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Finds the y location of where the piece is located in the grid
-        #                       not the actual pixel location.  The y locations are labeled 1
-        #                       through the number of spaces which in this case is 6
+        #       Definition:
         #####################################################################################
         returnValue = self.boardYOffset+(self.gridLineWidth*(self.inity - y) +(self.initwidth * (self.inity - y)))
         return returnValue
@@ -51,8 +47,7 @@ class Grid:
     def startGame(self):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Starts the game by setting the currentMovingPiece to be zero
-        #                       (the first one) and fills the screen with the color given
+        #       Definition:
         #####################################################################################
         self.screen.fill(self.color)
         self.currentMovingPiece = 0
@@ -61,8 +56,7 @@ class Grid:
     def continueGame(self, center = 'no'):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Continues the game for the user if no one has won.  It also
-        #                       removes the piece if it is in the center and it should not be.
+        #       Definition:
         #####################################################################################
         if (center == 'yes'):
             self.pieces[self.currentMovingPiece].RemoveMe(self.screen, self.yOffset ,self.GetXLocation())
@@ -72,13 +66,7 @@ class Grid:
     def MoveMovingPiece(self,direction, center = 'no'):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     This function moves the pieces according to the button pressed
-        #                       by the user.  If the direction is L or R then the function calls
-        #                       the function to remove the piece from where it is and repaint
-        #                       it where the user wants it to be.  If the user drops the piece,
-        #                       the drops the piece and changes changes the current player.
-        #                       If the player is the computer it calls the functions to make an
-        #                       intelligent move.
+        #       Definition:
         #####################################################################################
         BLACK=(0,0,0)
         BLUE = (0, 0, 255)
@@ -98,7 +86,6 @@ class Grid:
                 if (direction == 'R'):
                     self.MovingPiecePosition+=1
                 self.continueGame()
-
             if (direction == 'D'):
                 if (self.checkNewAvailableSquare(self.MovingPiecePosition) != -1):
                     xcheck = self.MovingPiecePosition
@@ -141,32 +128,23 @@ class Grid:
     def IntelligentMove(self):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Places in order the kinds of moves that the computer should go
-        #                       through when making a move.  It goes through the four conditions
-        #                       in a specific order and executes the first one that is possible.
+        #       Definition:
         #####################################################################################
-
-        #condition 1 is if the computer can win it will place the piece there
         x = self.CanWin('C')
         if (x != -1):
             return x
 
-        #condition 2 is if the user can win it will place the piece there and block them
         x = self.CanWin('U')
         if (x != -1):
             return x
+        if (self.difficulty ==2):
+            x = self.CanImproveWin('U')
+            if (x != -1):
+                return x
 
-        #condition 3 is if the user has 2 pieces in a row it will place a piece on one side of it
-        #to block them from making 3 in a row
-        x = self.CanImproveWin('U')
-        if (x != -1):
-            return x
-
-        #condition 4 is if the user has 2 pieces in a row it will place a piece on one side of it
-        #to make 3 in a row
-        x = self.CanImproveWin('C')
-        if (x != -1):
-            return x
+            x = self.CanImproveWin('C')
+            if (x != -1):
+                return x
 
         return -1
 
@@ -174,7 +152,7 @@ class Grid:
         #####################################################################################
         #       Developer:      Jacob Croes
         #       Definition:     This is used to order the rules defined below to give priority
-        #                       with diagonal having the highest  prefreance followed by
+        #                       with diagonal having the highest  prefreance followed by 
         #                       horizontal and vertical
         #####################################################################################
         x = self.CanImproveWinDiagnoally(usertype)
@@ -195,7 +173,7 @@ class Grid:
         #####################################################################################
         #       Developer:      Jacob Croes
         #       Definition:     This is used to check for three in a row horizontally where
-        #                       there is two in a row or one piece with a gap and then another
+        #                       there is two in a row or one piece with a gap and then another 
         #                       piece
         #####################################################################################
         for i in range (self.inity):
@@ -214,7 +192,7 @@ class Grid:
     def CheckTwoPossiblePieces(self,usertype, x1,y1,x2,y2,p1,p2,p3,p4):
         #####################################################################################
         #       Developer:      Jacob Croes
-        #       Definition:     This is used to check if the pieces next to eachother or the
+        #       Definition:     This is used to check if the pieces next to eachother or the 
         #                       pieces with the gap in between are the same color
         #####################################################################################
         piece1 = self.getPieceGivenXY(x1, y1)
@@ -244,7 +222,7 @@ class Grid:
     def CanImproveWinDiagnoally(self, usertype):
         #####################################################################################
         #       Developer:      Jacob Croes
-        #       Definition:     This is used to check for possible diagonals of three in a row
+        #       Definition:     This is used to check for possible diagonals of three in a row 
         #                       either where there is two in a row or one piece with a gap and
         #                       then another piece. It uses bounds too check for impossible cases
         #                       and to not execute if the bounds are not met
@@ -313,7 +291,7 @@ class Grid:
     def IsPlayablePiece(self, x, y):
         #####################################################################################
         #       Developer:      Jacob Croes
-        #       Definition:     This is used to check the bounds
+        #       Definition:     This is used to set the bounds
         #####################################################################################
         if (x > 0 and x <= self.initx and y >= 0 and y <= self.inity):
             if (self.getPieceGivenXY(x,y) == ""):
@@ -325,8 +303,7 @@ class Grid:
     def CanWin(self, usertype):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Checks to see if the user or computer can win.  The usertype
-        #                       is needed to see what pieces it should be checking.
+        #       Definition:
         #####################################################################################
         x = self.CanWinHorizontally(usertype)
         if (x != -1):
@@ -345,9 +322,7 @@ class Grid:
     def CanWinHorizontally(self, usertype):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Checks to see if there is three pieces with the same user type
-        #                       in a row horizontally.  If so it will return the x value to
-        #                       complete the three or block the user.
+        #       Definition:
         #####################################################################################
         for i in range (self.inity):
             for j in range (1, self.initx-2):
@@ -369,8 +344,7 @@ class Grid:
     def CheckPossiblePieces(self,usertype, x1,y1,x2,y2,x3,y3,p1,p2,p3,p4):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Given the  and y coordinates it checks to see what piece is in
-        #                       that place and then sends the pieces to the next function
+        #       Definition:
         #####################################################################################
         piece1 = self.getPieceGivenXY(x1, y1)
         piece2 = self.getPieceGivenXY(x2, y2)
@@ -386,9 +360,7 @@ class Grid:
     def CanWinVertically(self, usertype):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Checks to see if there is three pieces with the same user type
-        #                       in a row vertically.  If so it will return the x value to
-        #                       complete the three or block the user.
+        #       Definition:
         #####################################################################################
         for i in range (1, self.initx + 1):
             for j in range (self.inity - 3):
@@ -401,9 +373,7 @@ class Grid:
     def CanWinDiagnoally(self, usertype):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Checks to see if there is three pieces with the same user type
-        #                       in a row diagonally.  If so it will return the x value to
-        #                       complete the three or block the user.
+        #       Definition:
         #####################################################################################
         for i in range (self.inity ):
             for j in range (1, self.initx):
@@ -440,8 +410,7 @@ class Grid:
     def checkforpossiblewinning(self,piece1,piece2,piece3, usertype):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Checks to see if the player or computer as three pieces
-        #                       in a row and can win on the newxt turn.
+        #       Definition:
         #####################################################################################
         if (piece1 != "" and  piece2 != "" and  piece3 != "" and piece1.color == piece2.color == piece3.color and piece1.playertype == piece2.playertype == piece3.playertype == usertype):
 
@@ -452,8 +421,7 @@ class Grid:
     def IsPlayable(self, x1, y1, x2, y2):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Checks to see if option on either side of the three in a row
-        #                       is a payable move.
+        #       Definition:
         #####################################################################################
         x = self.IsPlayablePiece(x1, y1)
         if (x != -1):
@@ -468,8 +436,7 @@ class Grid:
     def IsPlayablePiece(self, x, y):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Checks to see if the coordinate given is in the grid and
-        #                       if there is a piece below it or not.
+        #       Definition:
         #####################################################################################
         if (x > 0 and x <= self.initx and y >= 0 and y <= self.inity):
             if (self.getPieceGivenXY(x,y) == ""):
@@ -481,9 +448,7 @@ class Grid:
     def displaywinningmessage(self,win):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Depending on if someone has won and who it was it displays a
-        #                       message on the next screen that comes up accordingly.
-        #                       It also adds to the JSON file who has won the game and stores it.
+        #       Definition:
         #####################################################################################
         BLACK=(0,0,0)
         BLUE = (0, 0, 255)
@@ -521,15 +486,20 @@ class Grid:
         x = screens("Times New Roman", self.screen)
         returnvalue = x.screenmaking(winningmessage, "", BLUE, RED, BLACK, "Winning History","Start Over", 'history', 'history')
         if (returnvalue == 'history'):
-
+            
             historymessage = myfile.readJSONfile()
             y = screens("Times New Roman", self.screen)
             returnvalue = y.screenmaking(historymessage[0], historymessage[1], BLUE, RED, BLACK, "Start Over","mean nothing", 'no', 'history', historymessage[2], historymessage[3])
-
+        
         if (returnvalue == 'restart'):
             z = screens("Times New Roman", self.screen)
             returnvalue = z.screenmaking("Choose 1 or 2 Players", "", BLUE, RED, BLACK,"One Player", "Two Player", 'yes')
             if (returnvalue == 'OnePlayer'):
+                returnvalue = z.screenmaking("Choose difficulty" , "", BLUE ,RED ,BLACK , "Easy", "Hard", 'difficult')
+                if (returnvalue == 'Easy'):
+                    self.difficulty = 1
+                else:
+                    self.difficulty = 2
                 self.NewGame(self.screen)
             else:
                 self.NewGame(self.screen, 'twoplayer')
@@ -539,9 +509,7 @@ class Grid:
     def NewGame(self, screen, playermode = 'oneplayer', startingplayer = 'C', initx = 7, inity = 6, initwidth = 75):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Starts a new game and sets all of the attributes of the class.
-        #                       It also initializes the pieces and makes them prior to the game
-        #                       beginning.
+        #       Definition:
         #####################################################################################
         RED = (255, 0, 0)
         BLUE = (0, 0, 255)
@@ -571,7 +539,7 @@ class Grid:
 
         self.currentplayer = self.startingplayer
         self.pieces = []
-        self.pieces.clear()
+        ##self.pieces.clear()
 
         for i in range (self.initx * self.inity):
             if (i%2==0):
@@ -584,7 +552,7 @@ class Grid:
     def MovetoPosition(self, X):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     When given an x position it moves the piece for the computer
+        #       Definition:
         #####################################################################################
         erasepiece = 'yes'
         self.pieces[self.currentMovingPiece].RemoveMe(self.screen, self.yOffset ,self.GetXLocation())
@@ -621,8 +589,7 @@ class Grid:
     def RandomMove(self):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Performs a random move for the computer if there is no
-        #                       better move.
+        #       Definition:
         #####################################################################################
         found = False
         while (found == False):
@@ -636,8 +603,7 @@ class Grid:
     def didPlayerWin(self):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Returns true if the player won either horizontally,
-        #                       vertically, or diagonally.
+        #       Definition:
         #####################################################################################
         if(self.didPlayerWinHorizontally() == True or self.didPlayerWinVertically() == True or self.didPlayerWinDiagonally() == True):
             return True
@@ -645,7 +611,7 @@ class Grid:
     def getPieceGivenXY(self,x,y):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Finds if there is a piece in the spot given the x and y coordinates
+        #       Definition:
         #####################################################################################
         for i in range (self.initx * self.inity):
             if (self.pieces[i].x == x and self.pieces[i].y == y):
@@ -656,8 +622,7 @@ class Grid:
     def didPlayerWinHorizontally(self):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Checks to see if the player has won horizontally with
-        #                       four pieces in a row.
+        #       Definition:
         #####################################################################################
         for i in range (self.inity):
             for j in range (self.initx - 2):
@@ -674,8 +639,7 @@ class Grid:
     def didPlayerWinVertically(self):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Checks to see if the player has won vertically with
-        #                       four pieces in a row.
+        #       Definition:
         #####################################################################################
         for i in range (self.initx + 1):
             for j in range (self.inity - 3):
@@ -692,8 +656,7 @@ class Grid:
     def SetPieceColorGivenXY(self,x,y, color):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Colors the piece given by the x and y coordinate and the color
-        #                       to change it to
+        #       Definition:
         #####################################################################################
         BLACK=(0,0,0)
         BLUE = (0, 0, 255)
@@ -705,8 +668,7 @@ class Grid:
     def paintwinningpieces(self, x1,y1,x2,y2,x3,y3,x4,y4):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Makes the winning pieces blink back and forth between blue
-        #                       and black 6 times.
+        #       Definition:
         #####################################################################################
         BLACK=(0,0,0)
         BLUE = (0, 0, 255)
@@ -730,8 +692,7 @@ class Grid:
     def checkforwinning(self,piece1, piece2, piece3, piece4):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Checks to see if a player has won the game either vertially,
-        #                       horiontally, or diagonally
+        #       Definition:
         #####################################################################################
         BLACK=(0,0,0)
 
@@ -743,8 +704,7 @@ class Grid:
     def didPlayerWinDiagonally(self):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Checks to see if the player has won horizontally with
-        #                       four pieces in a row.
+        #       Definition:
         #####################################################################################
         for i in range (self.inity - 2):
             for j in range (self.initx - 2):
@@ -773,7 +733,7 @@ class Grid:
     def checkNewAvailableSquare(self,x):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Checks the next square that the piece can go into once dropped.
+        #       Definition:
         #####################################################################################
         ColumnLocation = 0
         for i in range (self.initx * self.inity):
@@ -789,9 +749,7 @@ class Grid:
     def validateMove(self, direction):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Validates that if the user pushes the right or left key that
-        #                       they will actually be allowed to move the pice in that direction
-        #                       and it will not go off the grid
+        #       Definition:
         #####################################################################################
         if (direction == 'L'):
             if (self.MovingPiecePosition <=1):
@@ -809,9 +767,7 @@ class Grid:
     def drawpieces(self):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     draws all of the pieces before starting the game and sets
-        #                       their position to be -1 -1 so that they are not displayed on
-        #                       the screen
+        #       Definition:
         #####################################################################################
         for i in range (self.initx * self.inity):
             if (self.pieces[i].x != -1 and self.pieces[i].y != -1):
@@ -820,7 +776,7 @@ class Grid:
     def drawgrid(self):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Draws the 6 by 7 grid on the screen in the color white.
+        #       Definition:
         #####################################################################################
         WHITE = (255, 255, 255)
 
@@ -839,9 +795,8 @@ class Piece:
     ##################################################################################################################################
     #       Developer:      Ariel Khatchatourian
     #       Date Finished:  5/2/2017
-    #       Definition:     The objective of this class is to create the pieces that will be used for the game.  The cals can set a color
-    #                       and draws and removes the piece when it is moved around.  It also stores the position of the piece once
-    #                       it is placed.
+    #       Definition:     The objective of this class is to create the grid for the connect four game
+    #                       The class includes one player and two player modes
     ##################################################################################################################################
     def __init__(self, playertype,diameter, x=-1, y=-1):
         self.x = x
@@ -861,15 +816,14 @@ class Piece:
     def SetColor(self, color):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Sets the color of the piece
+        #       Definition:
         #####################################################################################
         self.color = color
 
     def drawObject(self,screen,rect_x,rect_y):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     As long as the piece is on the board, it will redraw each
-        #                       piece every turn
+        #       Definition:
         #####################################################################################
         if (self.x != -1 and self.y != -1):
             pygame.draw.circle(screen, self.color, [rect_x+self.diameter//2, rect_y],(self.diameter-10)//2)
@@ -877,16 +831,14 @@ class Piece:
     def drawMoving(self,screen,rectY,rectX):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Draws the piece above the grid for the user to move right
-        #                       and left.
+        #       Definition:
         #####################################################################################
         pygame.draw.circle(screen, self.color, [rectX+self.diameter//2, rectY] ,((self.diameter-10)//2))
 
     def RemoveMe(self,screen,rectY,rectX):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Paints over where the piece originally was with the background
-        #                       color.
+        #       Definition:
         #####################################################################################
         pygame.draw.circle(screen, self.backColor, [rectX+self.diameter//2, rectY] ,((self.diameter-10)//2))
 
@@ -894,9 +846,8 @@ class screens:
     ##################################################################################################################################
     #       Developer:      Ariel Khatchatourian
     #       Date Finished:  5/2/2017
-    #       Definition:     The objective of this class is to create different screens for the user to see with different captions
-    #                       and instructions for the user to follow.  It also displays buttons on the screen that the user can click
-    #                       to go to different screens.
+    #       Definition:     The objective of this class is to create the grid for the connect four game
+    #                       The class includes one player and two player modes
     ##################################################################################################################################
     def __init__(self, fonttype, screen):
         self.button1xloc = 125
@@ -918,7 +869,7 @@ class screens:
     def text_objects(self, text, font, color):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Places texts onto the buttons that display to the user.
+        #       Definition:
         #####################################################################################
         textSurface = font.render(text, True, color)
         return textSurface, textSurface.get_rect()
@@ -926,8 +877,7 @@ class screens:
     def screenmaking(self,label1, label2, screencolor, fontcolor, fontcolortxt, button1label, button2label, value, method='button', label3 = "", label4 = ""):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Constructs different screens depending on the texts given to
-        #                       the user and how many buttons specified.
+        #       Definition:
         #####################################################################################
         BLUE = (0, 0, 255)
         RED = (255, 0, 0)
@@ -962,10 +912,7 @@ class screens:
     def button(self, fontcolortxt, button1label, button2label, value, method = 'button'):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Cretes buttons to be placed on the screen.  The number of
-        #                       buttons on the screen depends on how many is specified and
-        #                       it also allows the user to click the button and return a
-        #                       certain value depending on what screen the user is on.
+        #       Definition:
         #####################################################################################
         RED = (255, 0, 0)
         LIGHTRED = (100,0,0)
@@ -1034,13 +981,36 @@ class screens:
             textRect.center = ( ((self.button2xloc+(self.buttonlength/2))) , (self.historybuttony+(self.buttonwidth/2)))
             self.screen.blit(textSurf, textRect)
 
+        if (value == 'difficult'):
+            if (self.button1xloc + self.buttonlength > mouse[0] > self.button1xloc and self.historybuttony + self.buttonwidth > mouse[1] > self.historybuttony):
+                pygame.draw.rect(self.screen, LIGHTRED, (self.button1xloc, self.historybuttony,self.buttonlength,self.buttonwidth))
+                if (click[0] == 1):
+                    return('Easy')
+            else:
+                pygame.draw.rect(self.screen, RED, (self.button1xloc, self.historybuttony,self.buttonlength,self.buttonwidth))
+            smallfont=pygame.font.SysFont(self.fonttype, 20)
+            textSurf, textRect = self.text_objects(button1label, smallfont, fontcolortxt)
+            textRect.center = ( ((self.button1xloc)+(self.buttonlength/2))) , (self.historybuttony+(self.buttonwidth/2))
+            self.screen.blit(textSurf, textRect)
+                    
+            if (self.button2xloc + self.buttonlength > mouse[0] > self.button2xloc and self.historybuttony + self.buttonwidth > mouse[1] > self.historybuttony):
+                pygame.draw.rect(self.screen, LIGHTRED, (self.button2xloc, self.historybuttony,self.buttonlength,self.buttonwidth))
+                if (click[0] == 1):
+                    return('Hard')
+            else:
+                pygame.draw.rect(self.screen, RED, (self.button2xloc, self.historybuttony,self.buttonlength,self.buttonwidth))
+            textSurf, textRect = self.text_objects(button2label, smallfont, fontcolortxt)
+            textRect.center = ( ((self.button2xloc+(self.buttonlength/2))) , (self.historybuttony+(self.buttonwidth/2)))
+            self.screen.blit(textSurf, textRect)
+
         return(False)
 
 class file:
     ##################################################################################################################################
     #       Developer:      Ariel Khatchatourian
     #       Date Finished:  5/2/2017
-    #       Definition:     This class writes to a JSON file and records the winning history of the player
+    #       Definition:     The objective of this class is to create the grid for the connect four game
+    #                       The class includes one player and two player modes
     ##################################################################################################################################
     def __init__(self, filename):
         self.filename = filename
@@ -1048,14 +1018,14 @@ class file:
     def readfromfile(self,user, message):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Opens up the file and reads it.
+        #       Definition:
         #####################################################################################
         open(filename, 'r')
 
     def writefile(self, text):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Writes certain text into a file.
+        #       Definition:
         #####################################################################################
         outfile = open(self.filename, "a+")
         outfile.write(text)
@@ -1065,16 +1035,14 @@ class file:
     def doesfileexist(self):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:    Checks to see if the file exists on the computer already
+        #       Definition:
         #####################################################################################
         return os.path.exists(self.filename)
 
     def readJSONfile(self):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     If there is no file it writes a JSON file on the computer.
-        #                       If one exists it updates the number of times that person
-        #                       has won.
+        #       Definition:
         #####################################################################################
         if (self.doesfileexist() == False):
             config = {'Player_1': 0 , 'Player_2' : 0, 'Computer': 0, 'No_Winner' : 0}
@@ -1099,10 +1067,7 @@ class file:
     def writeJSONfile(self, winner):
         #####################################################################################
         #       Developer:      Ariel Khatchatourian
-        #       Definition:     Writes into the JSON file already made depending on who has
-        #                       won the game, that is why the winner is needed when calling
-        #                       this function.  It adds adds one to the player that has
-        #                       won the game to keep track.
+        #       Definition:
         #####################################################################################
         if (self.doesfileexist() == False):
             config = {'Player_1': 0 , 'Player_2' : 0, 'Computer': 0, 'No_Winner' : 0}

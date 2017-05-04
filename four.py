@@ -29,16 +29,23 @@ end_it=False
 
 
 def main():
+    Difficulty = 1
     #creates the first two screens that the user will see
     x = classes.screens("Times New Roman", screen)
     x.screenmaking("Welcome to Connect Four!!", "Click the button to continue", BLUE, RED, BLACK, "Continue!","nothing", 'no')
     returnvalue = x.screenmaking("Choose 1 or 2 Players", "", BLUE, RED, BLACK,"One Player", "Two Player", 'yes')
 
-    #performs different functions based on what the user presses
+    #if the user returns one player it gives then the option of an easy or hard mode and returns a value accordingly
     if (returnvalue == 'OnePlayer'):
-        MyGrid = classes.Grid(screen)
+        returnvalue = x.screenmaking("Choose difficulty" , "", BLUE ,RED ,BLACK , "Easy", "Hard", 'difficult')
+        if(returnvalue == 'Easy'):
+            Difficulty = 1
+        else:
+            Difficulty = 2
+        MyGrid = classes.Grid(screen, Difficulty)
     else:
-        MyGrid = classes.Grid(screen, 'twoplayer')
+        MyGrid = classes.Grid(screen, Difficulty, 'twoplayer')
+
 
     done = False
     MyGrid.drawgrid()
